@@ -15,5 +15,6 @@ class Task extends Model
         'end_at',
         'is_done',
         'type',
+        'is_priority'
     ];
 }

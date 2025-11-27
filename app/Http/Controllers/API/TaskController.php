@@ -44,6 +44,7 @@ class TaskController extends Controller
             'start_at'    => 'nullable|date',
             'end_at'      => 'nullable|date',
             'type'        => 'required|in:task,agenda',
+            'is_priority' => 'boolean',
         ]);
 
         $data['user_id'] = Auth::id();
@@ -71,6 +72,7 @@ class TaskController extends Controller
             'end_at'      => 'nullable|date',
             'is_done'     => 'boolean',
             'type'        => 'in:task,agenda',
+            'is_priority' => 'boolean',
         ]);
 
         $task->update($data);
