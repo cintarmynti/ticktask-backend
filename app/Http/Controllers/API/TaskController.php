@@ -9,11 +9,19 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $r)
     {
-        $tasks = Task::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $r->validate([
+            'is_done' => 'nullable|in:0,1',
+        ]);
+
+        $query = Task::where('user_id', Auth::id());
+
+        if ($r->has('is_done')) {
+            $query->where('is_done', (int) $r->input('is_done'));
+        }
+
+        $tasks = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'status'  => true,
@@ -26,7 +34,15 @@ class TaskController extends Controller
     {
         $task = Task::where('user_id', Auth::id())
             ->where('id', $id)
-            ->firstOrFail();
+            ->first();
+
+        if (! $task) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Task not found',
+                'data'    => null,
+            ], 404);
+        }
 
         return response()->json([
             'status'  => true,
@@ -62,7 +78,15 @@ class TaskController extends Controller
     {
         $task = Task::where('user_id', Auth::id())
             ->where('id', $id)
-            ->firstOrFail();
+            ->first();
+
+        if (! $task) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Task not found',
+                'data'    => null,
+            ], 404);
+        }
 
         $data = $r->validate([
             'title'       => 'sometimes|required',
@@ -88,7 +112,15 @@ class TaskController extends Controller
     {
         $task = Task::where('user_id', Auth::id())
             ->where('id', $id)
-            ->firstOrFail();
+            ->first();
+
+        if (! $task) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Task not found',
+                'data'    => null,
+            ], 404);
+        }
 
         $task->delete();
 

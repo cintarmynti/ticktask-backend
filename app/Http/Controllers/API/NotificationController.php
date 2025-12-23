@@ -27,9 +27,16 @@ class NotificationController extends Controller
     {
         $notification = Notification::where('id', $id)
             ->where('user_id', $request->user()->id)
-            ->firstOrFail();
+            ->first();
 
-        // tandai sudah dibaca
+        if (!$notification) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Notification not found',
+                'data'    => null,
+            ], 404);
+        }
+
         if (!$notification->is_read) {
             $notification->update(['is_read' => true]);
         }
